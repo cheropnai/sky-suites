@@ -13,8 +13,11 @@ class CreateCitiesTable extends Migration
     {
         Schema::create('cities', function (Blueprint $table) {
             $table->id(); // This should be unsignedBigInteger by default
+            $table->unsignedBigInteger('country_id');
             $table->string('name');
             $table->timestamps();
+
+            $table->foreign('country_id')->references('id')->on('countries')->onDelete('cascade');
         });
     }
 
