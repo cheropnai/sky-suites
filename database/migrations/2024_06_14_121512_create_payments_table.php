@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('payments', function (Blueprint $table) {
             $table->id();
             $table->unsignedBigInteger('user_id');
-            $table->unsignedBigInteger('bookings_id');
+            $table->unsignedBigInteger('booking_id'); // Changed to singular form
             $table->string('payment_method');
             $table->decimal('amount', 10, 2);
             $table->string('transaction_id')->unique();
@@ -24,10 +24,10 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade');
-            $table->foreign('bookings_id')->references('id')->on('bookings')->onDelete('cascade');
+            $table->foreign('booking_id')->references('id')->on('bookings')->onDelete('cascade');
         });
     }
-()
+
     /**
      * Reverse the migrations.
      */

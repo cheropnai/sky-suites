@@ -13,8 +13,8 @@ return new class extends Migration
     {
         Schema::create('bookings', function (Blueprint $table) {
             $table->id();
-            $table->unsignedBigInteger('apartments_id');
-            $table->unsignedGibInteger('user_id');
+            $table->unsignedBigInteger('apartment_id'); // Changed to singular form
+            $table->unsignedBigInteger('user_id'); // Fixed typo
             $table->dateTime('start_date');
             $table->dateTime('end_date');
             $table->string('status')->default('pending');
@@ -22,7 +22,7 @@ return new class extends Migration
             $table->timestamps();
 
             $table->foreign('apartment_id')->references('id')->on('apartments')->onDelete('cascade');
-            $table->foreign('user_id')->references('id')->('users')->onDelete('cascade');
+            $table->foreign('user_id')->references('id')->on('users')->onDelete('cascade'); // Added missing `->references`
         });
     }
 
