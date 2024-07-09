@@ -22,7 +22,6 @@ class StorePaymentRequest extends FormRequest
     public function rules(): array
     {
         return [
-            return [
                 'user_id' => 'required|exists:users,id',
                 'booking_id' => 'required|exists:bookings,id',
                 'payment_method' => 'required|string',
@@ -31,6 +30,6 @@ class StorePaymentRequest extends FormRequest
                 'currency' => 'required|string',
                 'status' => 'required|string',
             ];
-        ];
+        
     }
 }
