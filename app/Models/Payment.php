@@ -9,9 +9,9 @@ class Payment extends Model
 {
     protected $fillable = [
         'user_id', 'booking_id', 'payment_method', 'amount', 'transaction_id',
-        'currency', 'status', 'details',
+        'currency', 'status', 'details', 'order_id',
     ];
-
+    public $timestamps = true;
     // Define relationship to user
     public function user()
     {

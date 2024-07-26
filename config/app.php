@@ -69,6 +69,7 @@ return [
 
     /*
     |--------------------------------------------------------------------------
+
     | Application Locale Configuration
     |--------------------------------------------------------------------------
     |
@@ -117,10 +118,44 @@ return [
     | Supported drivers: "file", "cache"
     |
     */
-
+    
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Autoloaded Service Providers
+    |--------------------------------------------------------------------------
+    |
+    | The service providers listed here will be automatically loaded on the
+    | request to your application. Feel free to add your own services to
+    | this array to grant expanded functionality to your applications.
+    |
+    */
+
+    // 'providers' => [
+        
+
+    //     Kreait\Laravel\Firebase\ServiceProvider::class, // <-- Added Firebase Service Provider
+    // ],
+
+    // /*
+    // |--------------------------------------------------------------------------
+    // | Class Aliases
+    // |--------------------------------------------------------------------------
+    // |
+    // | This array of class aliases will be registered when this application
+    // | is started. However, feel free to register as many as you wish as the
+    // | aliases are "lazy" loaded so they don't hinder performance.
+    // |
+    // */
+
+    // 'aliases' => [
+        
+
+    //     'Firebase' => Kreait\Laravel\Firebase\Facades\Firebase::class, // <-- Added Firebase Alias
+    // ],
 
 ];

@@ -1,11 +1,62 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
+// use App\Http\Controllers\ProfileController;
+// use Illuminate\Foundation\Application;
+// use Illuminate\Support\Facades\Route;
+// use Inertia\Inertia;
+// use App\Http\Controllers\ApartmentController;
+// use App\Http\Controllers\PaymentController;
+// use App\Http\Controllers\BookingController;
 
-Route::get('/', function () {
-    return view('welcome');
-});
+// // Route::get('/', function () {
+//     return Inertia::render('Welcome', [
+//         'canLogin' => Route::has('login'),
+//         'canRegister' => Route::has('register'),
+//         'laravelVersion' => Application::VERSION,
+//         'phpVersion' => PHP_VERSION,
+//     ]);
+// });
 
-Auth::routes();
+// Route::get('/dashboard', function () {
+//     return Inertia::render('Dashboard');
+// })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+// Route::middleware('auth')->group(function () {
+//     Route::get('/profile', [ProfileController::class, 'edit'])->name('profile.edit');
+//     Route::patch('/profile', [ProfileController::class, 'update'])->name('profile.update');
+//     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
+// });
+
+
+
+
+// // Protected route example
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/bookings', [BookingController::class, 'index']);
+//     Route::post('/bookings', [BookingController::class, 'store']);
+//     Route::get('/bookings/{booking}', [BookingController::class, 'show']);
+//     Route::put('/bookings/{booking}', [BookingController::class, 'update']);
+//     Route::delete('/bookings/{booking}', [BookingController::class, 'destroy']);
+// });
+
+//     // Add more routes that require authentication here
+
+// // Apartment routes
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/apartments', [ApartmentController::class, 'index']);
+//     Route::post('/apartments', [ApartmentController::class, 'store']);
+//     Route::get('/apartments/{apartment}', [ApartmentController::class, 'show']);
+//     Route::put('/apartments/{apartment}', [ApartmentController::class, 'update']);
+//     Route::delete('/apartments/{apartment}', [ApartmentController::class, 'destroy']);
+// });
+
+
+// // Payment routes
+// Route::middleware(['auth'])->group(function () {
+//     Route::get('/payments', [PaymentController::class, 'index']);
+//     Route::post('/payments', [PaymentController::class, 'store']);
+//     Route::get('/payments/{payment}', [PaymentController::class, 'show']);
+//     Route::put('/payments/{payment}', [PaymentController::class, 'update']);
+//     Route::delete('/payments/{payment}', [PaymentController::class, 'destroy']);
+// });
+// require __DIR__.'/auth.php';

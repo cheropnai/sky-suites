@@ -35,6 +35,10 @@ return [
             'root' => storage_path('app'),
             'throw' => false,
         ],
+        'firebase' => [
+        'driver' => 'firebase',
+        'storage' => env('FIREBASE_STORAGE_BUCKET'),
+        ],
 
         'public' => [
             'driver' => 'local',

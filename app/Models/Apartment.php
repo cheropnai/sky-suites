@@ -17,6 +17,9 @@ public function bookings()
  {
     return $this->belongsTo(City::class);
  }
-
+ public function images()
+ {
+     return $this->hasMany(Image::class);
+ }
     
 }
