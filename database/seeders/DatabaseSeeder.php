@@ -13,9 +13,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        $this->call(ApartmentSeeder::class);
-        // User::factory(10)->create();
-
-        
+        $this->call([
+            RegionSeeder::class,
+            CountrySeeder::class,
+            CitySeeder::class,
+            ApartmentSeeder::class,
+        ]);
     }
 }

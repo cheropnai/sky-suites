@@ -3,39 +3,47 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-use App\Models\Apartment;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 
 class ApartmentSeeder extends Seeder
 {
     public function run()
     {
-        // Make sure the 'images' directory exists in storage/app/public
-        Storage::disk('public')->makeDirectory('images');
+        $apartments = [
+            [
+                'name' => 'Sunny Downtown Loft',
+                'description' => 'A beautiful loft apartment in the heart of downtown.',
+                'address' => '123 Main St',
+                'price' => 1500.00,
+                'city_id' => 1
+            ],
+            [
+                'name' => 'Cozy Studio Near Park',
+                'description' => 'Compact and comfortable studio apartment close to Central Park.',
+                'address' => '456 Park Ave',
+                'price' => 1200.50,
+                'city_id' => 1
+            ],
+            [
+                'name' => 'Luxury Penthouse',
+                'description' => 'Spacious penthouse with panoramic city views.',
+                'address' => '789 Sky Tower',
+                'price' => 5000.00,
+                'city_id' => 2
+            ],
+            // Add more apartments as needed
+        ];
 
-        // Create a sample apartment
-        $apartment = Apartment::create([
-            'name' => 'Sample Apartment',
-            'description' => 'A beautifully furnished apartment.',
-            'price' => 1200,
-            'city_id' => 1, // Ensure this ID exists in the cities table
-            'address' => '123 Sample Street',
-        ]);
-
-        // Simulate image uploads
-        $images = ['image1.jpg', 'image2.jpg']; // Place these files in storage/app/public/images
-
-        foreach ($images as $imageName) {
-            Storage::disk('public')->putFileAs(
-                'images',
-                storage_path("app/seeders/$imageName"),
-                $imageName
-            );
-            $apartment->images()->create([
-                'path' => "images/$imageName",
+        foreach ($apartments as $apartment) {
+            DB::table('apartments')->insert([
+                'name' => $apartment['name'],
+                'description' => $apartment['description'],
+                'address' => $apartment['address'],
+                'price' => $apartment['price'],
+                'city_id' => $apartment['city_id'],
+                'created_at' => now(),
+                'updated_at' => now(),
             ]);
         }
     }
 }
-
-

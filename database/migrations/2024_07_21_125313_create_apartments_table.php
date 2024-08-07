@@ -9,23 +9,24 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-    public function up(): void
+    public function up()
     {
-        Schema::create('countries', function (Blueprint $table) {
+        Schema::create('apartments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->unsignedBigInteger('region_id');
+            $table->longText('description');
+            $table->string('address');
+            $table->decimal('price', 10, 2);
+            $table->foreignId('city_id')->constrained()->onDelete('cascade');
             $table->timestamps();
-
-            $table->foreign('region_id')->references('id')->on('regions')->onDelete('cascade');
         });
     }
 
     /**
      * Reverse the migrations.
      */
-    public function down(): void
+    public function down()
     {
-        Schema::dropIfExists('countries');
+        Schema::drop('apartments');
     }
 };
