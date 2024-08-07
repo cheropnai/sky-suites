@@ -10,15 +10,15 @@ use Kreait\Laravel\Firebase\Facades\Firebase;
 
 class FirebaseAparsController extends Controller
 {
-    // public function __construct()
-    // {
-    //     $this->middleware('auth:sanctum')->except(['index']);
-    // }
-
     public function index()
     {
-        $apartments = Apartment::with('images')->get(); // Eager load images
-        return response()->json($apartments);
+        try {
+            $apartments = Apartment::with('images')->get(); // Eager load images
+            return response()->json($apartments);
+        } catch (\Exception $e) {
+            Log::error('Error fetching apartments: ' . $e->getMessage());
+            return response()->json(['error' => 'Error fetching apartments'], 500);
+        }
     }
 
     public function store(Request $request)
@@ -34,19 +34,24 @@ class FirebaseAparsController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $apartment = Apartment::create($validated);
+        try {
+            $apartment = Apartment::create($validated);
 
-        if ($request->hasFile('images')) {
-            foreach ($request->file('images') as $image) {
-                $path = $this->uploadImageToFirebase($image);
-                Image::create([
-                    'apartment_id' => $apartment->id,
-                    'path' => $path,
-                ]);
+            if ($request->hasFile('images')) {
+                foreach ($request->file('images') as $image) {
+                    $path = $this->uploadImageToFirebase($image);
+                    Image::create([
+                        'apartment_id' => $apartment->id,
+                        'path' => $path,
+                    ]);
+                }
             }
-        }
 
-        return response()->json($apartment->load('images'), 201);
+            return response()->json($apartment->load('images'), 201);
+        } catch (\Exception $e) {
+            Log::error('Error storing apartment: ' . $e->getMessage());
+            return response()->json(['error' => 'Error storing apartment'], 500);
+        }
     }
 
     public function update(Request $request, string $id)
@@ -62,43 +67,58 @@ class FirebaseAparsController extends Controller
             'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
         ]);
 
-        $apartment->update($validated);
+        try {
+            $apartment->update($validated);
 
-        if ($request->hasFile('images')) {
-            $apartment->images()->delete(); // Remove existing images
+            if ($request->hasFile('images')) {
+                $apartment->images()->delete(); // Remove existing images
 
-            foreach ($request->file('images') as $image) {
-                $path = $this->uploadImageToFirebase($image);
-                Image::create([
-                    'apartment_id' => $apartment->id,
-                    'path' => $path,
-                ]);
+                foreach ($request->file('images') as $image) {
+                    $path = $this->uploadImageToFirebase($image);
+                    Image::create([
+                        'apartment_id' => $apartment->id,
+                        'path' => $path,
+                    ]);
+                }
             }
-        }
 
-        return response()->json($apartment->load('images'));
+            return response()->json($apartment->load('images'));
+        } catch (\Exception $e) {
+            Log::error('Error updating apartment: ' . $e->getMessage());
+            return response()->json(['error' => 'Error updating apartment'], 500);
+        }
     }
 
     public function destroy(string $id)
     {
-        $apartment = Apartment::findOrFail($id);
-        $apartment->images()->delete(); // Delete associated images
-        $apartment->delete();
-        return response()->json(null, 204);
+        try {
+            $apartment = Apartment::findOrFail($id);
+            $apartment->images()->delete(); // Delete associated images
+            $apartment->delete();
+            return response()->json(null, 204);
+        } catch (\Exception $e) {
+            Log::error('Error deleting apartment: ' . $e->getMessage());
+            return response()->json(['error' => 'Error deleting apartment'], 500);
+        }
     }
 
     private function uploadImageToFirebase($image)
     {
-        $firebaseStorage = Firebase::storage()->getBucket();
+        try {
+            $firebaseStorage = Firebase::storage()->getBucket();
 
-        $filePath = 'images/' . time() . '_' . $image->getClientOriginalName();
-        $bucket = $firebaseStorage->upload(
-            fopen($image->getRealPath(), 'r'),
-            [
-                'name' => $filePath,
-            ]
-        );
+            $filePath = 'images/' . time() . '_' . $image->getClientOriginalName();
+            $bucket = $firebaseStorage->upload(
+                fopen($image->getRealPath(), 'r'),
+                [
+                    'name' => $filePath,
+                ]
+            );
 
-        return $bucket->info()['mediaLink'];
+            return $bucket->info()['mediaLink'];
+        } catch (\Exception $e) {
+            Log::error('Error uploading image to Firebase: ' . $e->getMessage());
+            throw $e; // Re-throw the exception to be caught by the caller
+        }
     }
 }

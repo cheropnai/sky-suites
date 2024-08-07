@@ -13,6 +13,8 @@ use App\Http\Controllers\AdminController;
 
 use App\Http\Controllers\FirebaseAparsController;
 
+Route::get('/bookings', [BookingController::class, 'index']);
+
 Route::get('/apartments', [FirebaseAparsController::class, 'index']);
 Route::post('/apartments', [FirebaseAparsController::class, 'store']);
 Route::get('/apartments/{id}', [FirebaseAparsController::class, 'show']);
