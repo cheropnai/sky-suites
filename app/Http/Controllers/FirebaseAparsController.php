@@ -23,15 +23,23 @@ class FirebaseAparsController extends Controller
 
     public function store(Request $request)
 {
+    $validated = $request->validate([
+        'name' => 'required|string',
+        'description' => 'nullable|string',
+        'price' => 'required|numeric',
+        'city_id' => 'required',
+        'address' => 'nullable|string',
+        'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
+    ]);
+
     Log::warning("Request data: " . json_encode($request->all()));
-    
+
     Log::warning("Storing apartment");
 
     try {
         Log::warning("I'm here now");
 
-        $apartmentData = $request->only(['name', 'description', 'price', 'city_id', 'address']);
-        $apartment = Apartment::create($apartmentData);
+        $apartment = Apartment::create($validated);
 
         Log::warning("Apartment created with ID: " . $apartment->id);
 
@@ -40,25 +48,29 @@ class FirebaseAparsController extends Controller
             $images = $request->file('images');
             Log::warning("Images field: " . json_encode($images));
 
-            // If `images` is a single file
-            if ($images instanceof \Illuminate\Http\UploadedFile) {
+            // Check if images is an array
+            if (is_array($images)) {
+                Log::warning("Multiple image files detected.");
+                foreach ($images as $image) {
+                    if ($image instanceof \Illuminate\Http\UploadedFile) {
+                        $path = $this->uploadImageToFirebase($image);
+                        Image::create([
+                            'apartment_id' => $apartment->id,
+                            'path' => $path,
+                        ]);
+                    } else {
+                        Log::warning("Detected non-file in images array.");
+                    }
+                }
+            } elseif ($images instanceof \Illuminate\Http\UploadedFile) {
                 Log::warning("Single image file detected.");
                 $path = $this->uploadImageToFirebase($images);
                 Image::create([
                     'apartment_id' => $apartment->id,
                     'path' => $path,
                 ]);
-            } 
-            // If `images` is an array of files
-            else if (is_array($images)) {
-                Log::warning("Multiple image files detected.");
-                foreach ($images as $image) {
-                    $path = $this->uploadImageToFirebase($image);
-                    Image::create([
-                        'apartment_id' => $apartment->id,
-                        'path' => $path,
-                    ]);
-                }
+            } else {
+                Log::warning("No valid images found.");
             }
         } else {
             Log::warning("No images found in request.");
