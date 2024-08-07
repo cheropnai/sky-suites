@@ -18,6 +18,7 @@ Route::get('/bookings', [BookingController::class, 'index']);
 
 Route::get('/apartments/unbooked', [ApartmentController::class, 'unbooked']);
 
+Route::post('/theapartments', [ApartmentController::class, 'store']);
 
 Route::get('/apartments', [FirebaseAparsController::class, 'index']);
 Route::post('/apartments', [FirebaseAparsController::class, 'store']);

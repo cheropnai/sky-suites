@@ -22,23 +22,37 @@ class FirebaseAparsController extends Controller
     }
 
     public function store(Request $request)
-    {
-        Log::warning("Storing apartment");
+{
+    Log::warning("Request data: " . json_encode($request->all()));
+    
+    Log::warning("Storing apartment");
 
-        $validated = $request->validate([
-            'name' => 'required|string',
-            'description' => 'nullable|string',
-            'price' => 'required|numeric',
-            'city_id' => 'required',
-            'address' => 'nullable|string',
-            'images.*' => 'image|mimes:jpeg,png,jpg|max:2048',
-        ]);
+    try {
+        Log::warning("I'm here now");
 
-        try {
-            $apartment = Apartment::create($validated);
+        $apartmentData = $request->only(['name', 'description', 'price', 'city_id', 'address']);
+        $apartment = Apartment::create($apartmentData);
 
-            if ($request->hasFile('images')) {
-                foreach ($request->file('images') as $image) {
+        Log::warning("Apartment created with ID: " . $apartment->id);
+
+        // Debugging the image file
+        if ($request->hasFile('images')) {
+            $images = $request->file('images');
+            Log::warning("Images field: " . json_encode($images));
+
+            // If `images` is a single file
+            if ($images instanceof \Illuminate\Http\UploadedFile) {
+                Log::warning("Single image file detected.");
+                $path = $this->uploadImageToFirebase($images);
+                Image::create([
+                    'apartment_id' => $apartment->id,
+                    'path' => $path,
+                ]);
+            } 
+            // If `images` is an array of files
+            else if (is_array($images)) {
+                Log::warning("Multiple image files detected.");
+                foreach ($images as $image) {
                     $path = $this->uploadImageToFirebase($image);
                     Image::create([
                         'apartment_id' => $apartment->id,
@@ -46,13 +60,19 @@ class FirebaseAparsController extends Controller
                     ]);
                 }
             }
-
-            return response()->json($apartment->load('images'), 201);
-        } catch (\Exception $e) {
-            Log::error('Error storing apartment: ' . $e->getMessage());
-            return response()->json(['error' => 'Error storing apartment'], 500);
+        } else {
+            Log::warning("No images found in request.");
         }
+
+        Log::warning("I got here ");
+        return response()->json($apartment->load('images'), 201);
+    } catch (\Exception $e) {
+        Log::error('Error storing apartment: ' . $e->getMessage());
+        Log::error($e->getTraceAsString());
+        return response()->json(['error' => 'Error storing apartment'], 500);
     }
+}
+
 
     public function update(Request $request, string $id)
     {
@@ -103,10 +123,11 @@ class FirebaseAparsController extends Controller
     }
 
     private function uploadImageToFirebase($image)
-    {
+    {     Log::info('I got to the uploading function');
         try {
+            Log::info('Uploading image to Firebase');
+    
             $firebaseStorage = Firebase::storage()->getBucket();
-
             $filePath = 'images/' . time() . '_' . $image->getClientOriginalName();
             $bucket = $firebaseStorage->upload(
                 fopen($image->getRealPath(), 'r'),
@@ -114,8 +135,11 @@ class FirebaseAparsController extends Controller
                     'name' => $filePath,
                 ]
             );
-
-            return $bucket->info()['mediaLink'];
+    
+            $mediaLink = $bucket->info()['mediaLink'];
+            Log::info('Image uploaded to Firebase: ' . $mediaLink);
+    
+            return $mediaLink;
         } catch (\Exception $e) {
             Log::error('Error uploading image to Firebase: ' . $e->getMessage());
             throw $e; // Re-throw the exception to be caught by the caller

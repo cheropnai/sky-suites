@@ -14,10 +14,10 @@ use Illuminate\Support\Facades\Log;
 
 class ApartmentController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:sanctum')->except(['index', 'unbooked']);
-    }
+    // public function __construct()
+    // {
+    //     $this->middleware('auth:sanctum')->except(['index', 'unbooked']);
+    // }
 
     public function index()
     {
