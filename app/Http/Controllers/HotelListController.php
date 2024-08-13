@@ -4,11 +4,14 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use GuzzleHttp\Client;
+use Illuminate\Support\Facades\Log;
 
 class HotelListController extends Controller
 {
     public function search(Request $request)
     {
+        Log::info('Received Request:', $request->all());
+
         $validatedData = $request->validate([
             'latitude' => 'required|numeric',
             'longitude' => 'required|numeric',
@@ -42,8 +45,8 @@ class HotelListController extends Controller
                     'price_filter_currencycode' => 'EUR',
                     'languagecode' => 'en-us',
                     'units' => 'metric',
-                    'categories_filter' => 'Apartments',
-                    'order_by' => 'popularity',
+                    'categories_filter' => 'property_type::201',
+                    'order_by' => 'class_descending',
                 ],
 
             ]
@@ -58,9 +61,9 @@ class HotelListController extends Controller
     {
         $filteredResults = array_map(function ($item) {
             if (isset($item['hotel_id'])) {
-                $strikethroughPrice = isset($item['composite_price_breakdown']['strikethrough_amount_per_night'])
-                    ? round($item['composite_price_breakdown']['strikethrough_amount_per_night']['value'])
-                    : null;
+                // $strikethroughPrice = isset($item['composite_price_breakdown']['strikethrough_amount_per_night'])
+                //     ? round($item['composite_price_breakdown']['strikethrough_amount_per_night']['value'])
+                //     : null;
 
                 $gross_price_per_night = round($item['composite_price_breakdown']['gross_amount_per_night']['value'] * 1.3);
 
@@ -74,10 +77,7 @@ class HotelListController extends Controller
 
                 return [
                     'hotel_id' => $item['hotel_id'],
-                    'price_breakdown' => [
-                        'strikethrough_price_per_night' => $strikethroughPrice,
-                        'gross_price_per_night' => $gross_price_per_night,
-                    ],
+                    'price_per_night' => $gross_price_per_night,
                     'main_photo_url' => $photoUrl,
                     'hotel_name' => $item['hotel_name_trans'],
                     'city' => $item['city'],
