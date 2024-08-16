@@ -51,7 +51,11 @@ class HotelDetailsController extends Controller
 
     protected function filterAndTransformResults(array $results)
     {
-        $filteredResults = array_map(function ($item) {
+        return array_values(array_filter(array_map(function ($item) {
+            if (stripos($item['hotel_name'], 'Hotel') !== false) {
+                return null;
+            }
+
             $pricePerNight = round($item['composite_price_breakdown']['gross_amount_per_night']['value'] * 1.3);
             $hotelAddressLine = isset($item['hotel_address_line'])
                 ? $item['hotel_address_line']
@@ -100,11 +104,10 @@ class HotelDetailsController extends Controller
                 'house_rules' => $item['booking_home']['house_rules'],
                 'facilities' => $facilities,
                 'photos' => $photos,
+                'main_photo_url' => $photos[1]['url'],
 
             ];
-        }, $results);
-
-        return array_values(array_filter($filteredResults));
+        }, $results)));
     }
 
     //might remove dunno, it's kinda useless

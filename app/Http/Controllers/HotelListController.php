@@ -64,6 +64,9 @@ class HotelListController extends Controller
                 // $strikethroughPrice = isset($item['composite_price_breakdown']['strikethrough_amount_per_night'])
                 //     ? round($item['composite_price_breakdown']['strikethrough_amount_per_night']['value'])
                 //     : null;
+                if (stripos($item['hotel_name'], 'Hotel') !== false) {
+                    return null;
+                }
 
                 $gross_price_per_night = round($item['composite_price_breakdown']['gross_amount_per_night']['value'] * 1.3);
 
