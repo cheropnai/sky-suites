@@ -66,8 +66,12 @@ class HotelDetailsController extends Controller
                 : null;
 
             $hotelId = $item['hotel_id'];
-            $roomKey = $hotelId . '01';
+            $roomKey = array_key_first($item['rooms']);
 
+            $description = null;
+            $facilities = [];
+            $photos = [];
+            
             if (isset($item['rooms'][$roomKey])) {
                 $roomData = $item['rooms'][$roomKey];
 
