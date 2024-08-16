@@ -12,6 +12,8 @@ use App\Http\Controllers\AdminController;
 
 
 use App\Http\Controllers\FirebaseAparsController;
+use App\Http\Controllers\HotelDetailsController;
+use App\Http\Controllers\HotelListController;
 
 Route::get('/bookings', [BookingController::class, 'index']);
 //test out the unbooked apartments
@@ -26,6 +28,10 @@ Route::get('/apartments/{id}', [FirebaseAparsController::class, 'show']);
 Route::put('/apartments/{id}', [FirebaseAparsController::class, 'update']);
 Route::delete('/apartments/{id}', [FirebaseAparsController::class, 'destroy']);
 
+//Booking.com Results
+Route::get('/foreignApartments', [HotelListController::class, 'search']);
+Route::get('/foreignApartments/details', [HotelDetailsController::class, 'show']);
+
 // Route::get('/apartments', [ApartmentController::class, 'index']); // No authentication needed
 Route::post('/register', [AuthController::class, 'register']);
 Route::post('/login', [AuthController::class, 'login']);
@@ -36,7 +42,7 @@ Route::middleware('auth:sanctum')->group(function () {
     Route::get('/bookings', [BookingController::class, 'index']);
     Route::post('/bookings', [BookingController::class, 'store']);
     // Route::post('/apartments', [ApartmentController::class, 'store']);
-// Protected Routes
+    // Protected Routes
 
 
     // Route::put('/apartments/{apartment}', [ApartmentController::class, 'update']);
@@ -55,7 +61,7 @@ Route::middleware(['auth:sanctum', 'admin'])->group(function () {
     Route::get('/admin/users', [AdminController::class, 'getAllUsers']);
     Route::get('/admin/apartments', [AdminController::class, 'getAllApartments']);
     Route::get('/admin/bookings', [AdminController::class, 'getAllBookings']);
-    
+
     Route::delete('/admin/users/{id}', [AdminController::class, 'deleteUser']);
     Route::delete('/admin/apartments/{id}', [AdminController::class, 'deleteApartment']);
     Route::delete('/admin/bookings/{id}', [AdminController::class, 'deleteBooking']);
