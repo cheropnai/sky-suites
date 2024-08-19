@@ -9,8 +9,11 @@
 
 <body>
     <h1>Transaction Made</h1>
-    <p>Transaction ID: {{ $transactionDetails['transactionId'] }}</p>
+    <p>Amount: {{ $transactionDetails['amount'] }}</p>
     <p>Order Code: {{ $transactionDetails['orderCode'] }}</p>
+    <p>Card Issuing Bank: {{ $transactionDetails['cardIssuingBank'] }}</p>
+    <p>Full Name: {{ $transactionDetails['fullName'] }}</p>
+    <p>Email: {{ $transactionDetails['email'] }}</p>
     <p>You're Welcome!</p>
 </body>
 
