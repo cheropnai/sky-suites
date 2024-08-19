@@ -14,8 +14,10 @@ use App\Http\Controllers\AdminController;
 use App\Http\Controllers\FirebaseAparsController;
 use App\Http\Controllers\HotelDetailsController;
 use App\Http\Controllers\HotelListController;
+use App\Http\Controllers\TransactionController;
 
 Route::get('/bookings', [BookingController::class, 'index']);
+Route::get ('/send-transaction-mail',[TransactionController::class,'sendTransactionEmail']);
 
 Route::get('/apartments', [FirebaseAparsController::class, 'index']);
 Route::post('/apartments', [FirebaseAparsController::class, 'store']);
